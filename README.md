@@ -16,7 +16,7 @@ import (
 	"flag"
 
 	log "github.com/Sirupsen/logrus"
-	joonix "bitbucket.org/joonix/log"
+	joonix "github.com/joonix/log"
 )
 
 func main() {
