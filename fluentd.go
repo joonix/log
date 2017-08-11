@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/Sirupsen/logrus"
+	"github.com/sirupsen/logrus"
 )
 
 // FluentdFormatter is similar to logrus.JSONFormatter but with log level that are recongnized
