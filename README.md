@@ -15,7 +15,7 @@ import (
 	"fmt"
 	"flag"
 
-	log "github.com/Sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
 	joonix "github.com/joonix/log"
 )
 
