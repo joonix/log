@@ -31,7 +31,7 @@ func (f *FluentdFormatter) Format(entry *logrus.Entry) ([]byte, error) {
 
 	timestampFormat := f.TimestampFormat
 	if timestampFormat == "" {
-		timestampFormat = time.RFC3339
+		timestampFormat = time.RFC3339Nano
 	}
 
 	data["time"] = entry.Time.Format(timestampFormat)
