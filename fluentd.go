@@ -3,6 +3,7 @@ package log
 import (
 	"encoding/json"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/sirupsen/logrus"
@@ -36,7 +37,12 @@ func (f *FluentdFormatter) Format(entry *logrus.Entry) ([]byte, error) {
 
 	data["time"] = entry.Time.Format(timestampFormat)
 	data["message"] = entry.Message
-	data["severity"] = entry.Level.String()
+	if severityOverride, ok := data["!severity-override"]; ok {
+		data["severity"] = strings.ToUpper(severityOverride.(string))
+		delete(data, "!severity-override")
+	} else {
+		data["severity"] = strings.ToUpper(entry.Level.String())
+	}
 
 	serialized, err := json.Marshal(data)
 	if err != nil {
