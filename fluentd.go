@@ -8,10 +8,35 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+// Default logrus to FluentD severity map
+var SeverityMap = map[string]string {
+	"panic": "fatal",
+	"fatal": "fatal",
+	"warning" : "warn",
+	"debug": "debug",
+	"error": "error",
+	"trace": "trace",
+	"info": "info",
+}
+
+// logrus to stackdriver severity map
+func UseStackdriverSeverity(){
+	SeverityMap = map[string]string {
+		"panic": "CRITICAL",
+		"fatal": "CRITICAL",
+		"warning" : "WARNING",
+		"debug": "DEBUG",
+		"error": "ERROR",
+		"trace": "DEBUG",
+		"info": "INFO",
+	}
+}
+
 // FluentdFormatter is similar to logrus.JSONFormatter but with log level that are recongnized
 // by kubernetes fluentd.
 type FluentdFormatter struct {
 	TimestampFormat string
+	SeverityMap map[string]string
 }
 
 // Format the log entry. Implements logrus.Formatter.
@@ -36,7 +61,12 @@ func (f *FluentdFormatter) Format(entry *logrus.Entry) ([]byte, error) {
 
 	data["time"] = entry.Time.Format(timestampFormat)
 	data["message"] = entry.Message
-	data["severity"] = entry.Level.String()
+
+	if ms, ok := SeverityMap[entry.Level.String()]; ok {
+		data["severity"] = ms
+	} else {
+		data["severity"] = SeverityMap["debug"]
+	}
 
 	serialized, err := json.Marshal(data)
 	if err != nil {
