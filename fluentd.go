@@ -59,7 +59,7 @@ func (f *FluentdFormatter) Format(entry *logrus.Entry) ([]byte, error) {
 		timestampFormat = time.RFC3339Nano
 	}
 
-	data["time"] = entry.Time.Format(timestampFormat)
+	data["timestamp"] = entry.Time.Format(timestampFormat)
 	data["message"] = entry.Message
 
 	if ms, ok := SeverityMap[entry.Level.String()]; ok {
