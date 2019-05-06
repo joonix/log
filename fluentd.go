@@ -52,7 +52,7 @@ func (f *FluentdFormatter) Format(entry *logrus.Entry) ([]byte, error) {
 			data[k] = v
 		}
 	}
-	prefixFieldClashes(data)
+	prefixFieldClashes(data, entry.HasCaller())
 
 	timestampFormat := f.TimestampFormat
 	if timestampFormat == "" {
@@ -68,6 +68,17 @@ func (f *FluentdFormatter) Format(entry *logrus.Entry) ([]byte, error) {
 		data["severity"] = SeverityMap["debug"]
 	}
 
+	if entry.HasCaller() {
+		funcVal := entry.Caller.Function
+		fileVal := fmt.Sprintf("%s:%d", entry.Caller.File, entry.Caller.Line)
+		if funcVal != "" {
+			data[logrus.FieldKeyFunc] = funcVal
+		}
+		if fileVal != "" {
+			data[logrus.FieldKeyFile] = fileVal
+		}
+	}
+
 	serialized, err := json.Marshal(data)
 	if err != nil {
 		return nil, fmt.Errorf("Failed to marshal fields to JSON, %v", err)
@@ -75,7 +86,7 @@ func (f *FluentdFormatter) Format(entry *logrus.Entry) ([]byte, error) {
 	return append(serialized, '\n'), nil
 }
 
-func prefixFieldClashes(data logrus.Fields) {
+func prefixFieldClashes(data logrus.Fields, reportCaller bool) {
 	if t, ok := data["time"]; ok {
 		data["fields.time"] = t
 	}
@@ -86,5 +97,14 @@ func prefixFieldClashes(data logrus.Fields) {
 
 	if l, ok := data["level"]; ok {
 		data["fields.level"] = l
+	}
+
+	if reportCaller {
+		if l, ok := data[logrus.FieldKeyFunc]; ok {
+			data["fields."+logrus.FieldKeyFunc] = l
+		}
+		if l, ok := data[logrus.FieldKeyFile]; ok {
+			data["fields."+logrus.FieldKeyFile] = l
+		}
 	}
 }
