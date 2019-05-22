@@ -9,26 +9,26 @@ import (
 )
 
 // Default logrus to FluentD severity map
-var SeverityMap = map[string]string {
-	"panic": "fatal",
-	"fatal": "fatal",
-	"warning" : "warn",
-	"debug": "debug",
-	"error": "error",
-	"trace": "trace",
-	"info": "info",
+var SeverityMap = map[string]string{
+	"panic":   "fatal",
+	"fatal":   "fatal",
+	"warning": "warn",
+	"debug":   "debug",
+	"error":   "error",
+	"trace":   "trace",
+	"info":    "info",
 }
 
 // logrus to stackdriver severity map
-func UseStackdriverSeverity(){
-	SeverityMap = map[string]string {
-		"panic": "CRITICAL",
-		"fatal": "CRITICAL",
-		"warning" : "WARNING",
-		"debug": "DEBUG",
-		"error": "ERROR",
-		"trace": "DEBUG",
-		"info": "INFO",
+func UseStackdriverSeverity() {
+	SeverityMap = map[string]string{
+		"panic":   "CRITICAL",
+		"fatal":   "CRITICAL",
+		"warning": "WARNING",
+		"debug":   "DEBUG",
+		"error":   "ERROR",
+		"trace":   "DEBUG",
+		"info":    "INFO",
 	}
 }
 
@@ -36,7 +36,7 @@ func UseStackdriverSeverity(){
 // by kubernetes fluentd.
 type FluentdFormatter struct {
 	TimestampFormat string
-	SeverityMap map[string]string
+	SeverityMap     map[string]string
 }
 
 // Format the log entry. Implements logrus.Formatter.
@@ -97,6 +97,18 @@ func prefixFieldClashes(data logrus.Fields, reportCaller bool) {
 
 	if l, ok := data["level"]; ok {
 		data["fields.level"] = l
+	}
+
+	if m, ok := data["message"]; ok {
+		data["fields.message"] = m
+	}
+
+	if l, ok := data["timestamp"]; ok {
+		data["fields.timestamp"] = l
+	}
+
+	if l, ok := data["severity"]; ok {
+		data["fields.severity"] = l
 	}
 
 	if reportCaller {
