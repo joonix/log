@@ -1,3 +1,10 @@
+# * DEPRECATED *
+
+No longer maintained, the original use case can be solved with:
+- github.com/TV4/logrus-stackdriver-formatter
+
+Also see https://github.com/joonix/log/issues/2
+
 # Log
 
 ## FluentdFormatter
