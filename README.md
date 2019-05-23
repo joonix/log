@@ -1,16 +1,13 @@
-# * DEPRECATED *
-
-No longer maintained, the original use case can be solved with:
-- https://github.com/TV4/logrus-stackdriver-formatter
-
-Also see https://github.com/joonix/log/issues/2
-
 # Log
 
-## FluentdFormatter
+[![GoDoc](https://img.shields.io/badge/godoc-reference-blue.svg?style=flat)](https://godoc.org/github.com/joonix/log)
 
-Useful addition to logrus, allowing it to format log entries that can be parsed by Kubernetes
-and Google Container Engine.
+Formatter for logrus, allowing log entries to be recognized by the Google Cloud Platform.
+The goal is to keep concerns separate from infrastructure, services should log to
+stdout/stderr and have their log automatically forwarded by fluentd.
+
+Fluentd is the default forwarder in GCP environments. Each service shouldn't have
+to know about where to send logs or what to authenticate as.
 
 Example:
 
@@ -41,3 +38,9 @@ func main() {
 	log.Debug("hello world!")		
 }
 ```
+
+## Alternatives
+
+- https://github.com/TV4/logrus-stackdriver-formatter (seems abandoned)
+- https://github.com/knq/sdhook (implemented as a hook, doesn't require fluentd)
+- https://github.com/joonix/log/issues/2 (you can map the format yourself)
