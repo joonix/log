@@ -53,6 +53,16 @@ var formatterTests = []struct {
 		},
 	},
 	{
+		name: "With Field, skip empty message",
+		run: func(logger *logrus.Logger) {
+			logger.WithField("foo", "bar").Info()
+		},
+		out: map[string]interface{}{
+			"severity": "INFO",
+			"foo":      "bar",
+		},
+	},
+	{
 		name: "WithField, HTTPRequest and Error",
 		run: func(logger *logrus.Logger) {
 			req, _ := http.NewRequest("GET", "http://foo.bar", nil)
