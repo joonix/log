@@ -8,10 +8,10 @@ import (
 	"time"
 	"unicode/utf8"
 
-	"github.com/golang/protobuf/ptypes"
-	durpb "github.com/golang/protobuf/ptypes/duration"
 	"github.com/sirupsen/logrus"
 	logtypepb "google.golang.org/genproto/googleapis/logging/type"
+	"google.golang.org/protobuf/types/known/durationpb"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 // StackdriverFormat maps values to be recognized by the Google Cloud Platform.
@@ -28,11 +28,7 @@ func StackdriverFormat(f *Formatter) error {
 	}
 	f.TimestampFormat = func(fields logrus.Fields, now time.Time) error {
 		// https://cloud.google.com/logging/docs/agent/configuration#timestamp-processing
-		ts, err := ptypes.TimestampProto(now)
-		if err != nil {
-			return err
-		}
-		fields["timestamp"] = ts
+		fields["timestamp"] = timestamppb.New(now)
 		return nil
 	}
 
@@ -105,28 +101,28 @@ func (r HTTPRequest) MarshalJSON() ([]byte, error) {
 		e.ResponseSize = fmt.Sprintf("%d", r.ResponseSize)
 	}
 	if r.Latency != 0 {
-		e.Latency = ptypes.DurationProto(r.Latency)
+		e.Latency = durationpb.New(r.Latency)
 	}
 
 	return json.Marshal(e)
 }
 
 type logEntry struct {
-	RequestMethod                  string          `json:"requestMethod,omitempty"`
-	RequestURL                     string          `json:"requestUrl,omitempty"`
-	RequestSize                    string          `json:"requestSize,omitempty"`
-	Status                         int             `json:"status,omitempty"`
-	ResponseSize                   string          `json:"responseSize,omitempty"`
-	UserAgent                      string          `json:"userAgent,omitempty"`
-	RemoteIP                       string          `json:"remoteIp,omitempty"`
-	ServerIP                       string          `json:"serverIp,omitempty"`
-	Referer                        string          `json:"referer,omitempty"`
-	Latency                        *durpb.Duration `json:"latency,omitempty"`
-	CacheLookup                    bool            `json:"cacheLookup,omitempty"`
-	CacheHit                       bool            `json:"cacheHit,omitempty"`
-	CacheValidatedWithOriginServer bool            `json:"cacheValidatedWithOriginServer,omitempty"`
-	CacheFillBytes                 string          `json:"cacheFillBytes,omitempty"`
-	Protocol                       string          `json:"protocol,omitempty"`
+	RequestMethod                  string               `json:"requestMethod,omitempty"`
+	RequestURL                     string               `json:"requestUrl,omitempty"`
+	RequestSize                    string               `json:"requestSize,omitempty"`
+	Status                         int                  `json:"status,omitempty"`
+	ResponseSize                   string               `json:"responseSize,omitempty"`
+	UserAgent                      string               `json:"userAgent,omitempty"`
+	RemoteIP                       string               `json:"remoteIp,omitempty"`
+	ServerIP                       string               `json:"serverIp,omitempty"`
+	Referer                        string               `json:"referer,omitempty"`
+	Latency                        *durationpb.Duration `json:"latency,omitempty"`
+	CacheLookup                    bool                 `json:"cacheLookup,omitempty"`
+	CacheHit                       bool                 `json:"cacheHit,omitempty"`
+	CacheValidatedWithOriginServer bool                 `json:"cacheValidatedWithOriginServer,omitempty"`
+	CacheFillBytes                 string               `json:"cacheFillBytes,omitempty"`
+	Protocol                       string               `json:"protocol,omitempty"`
 }
 
 // fixUTF8 is a helper that fixes an invalid UTF-8 string by replacing

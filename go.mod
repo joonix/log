@@ -1,9 +1,16 @@
 module github.com/joonix/log
 
-go 1.12
+go 1.22
 
 require (
-	github.com/golang/protobuf v1.5.2
-	github.com/sirupsen/logrus v1.9.1
-	google.golang.org/genproto v0.0.0-20230216225411-c8e22ba71e44
+	github.com/sirupsen/logrus v1.9.4
+	google.golang.org/genproto v0.0.0-20250115164207-1a7da9e5054f
+	google.golang.org/protobuf v1.36.7
+)
+
+require (
+	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
+	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
+	github.com/stretchr/testify v1.11.1 // indirect
+	golang.org/x/sys v0.28.0 // indirect
 )
